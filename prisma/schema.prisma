@@ -9,76 +9,14 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-//Relacionamento  1  para  1 Um usuario pode ter apenas um perfil
-
-model User {
-  id      Int      @id @default(autoincrement())
-  name    String
-  email   String
-  profile Profile?
-  autor   Autor[]
-}
-
-model Profile {
-  id      Int    @id @default(autoincrement())
-  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id Int    @unique
-  nome    String
-}
-
-//Relacionamento  1  para  1 um funcionario pode ter apenas 1 detalhes
-model Employee {
-  id              Int              @id @default(autoincrement())
-  name            String
-  employee_detail Employee_detail?
-}
-
-model Employee_detail {
-  id          Int      @id() @default(autoincrement())
-  employee    Employee @relation(fields: [employee_id], references: [id])
-  employee_id Int      @unique
-  name        String
-}
-
-//Relacionamento  1  para  N uma maẽ pode ter varios filhos e um filho pode ter so uma mae
-
-model Mother {
-  id     Int     @id @default(autoincrement())
-  name   String
-  childs Child[]
-}
-
-model Child {
-  id        Int    @id @default(autoincrement())
-  mother    Mother @relation(fields: [mother_id], references: [id])
-  mother_id Int
-  name      String
-}
-
-model Autor {
-  id      Int        @id @default(autoincrement())
-  user    User       @relation(fields: [user_id], references: [id])
-  user_id Int
-  name    String
-  book    AutorBook?
-  
-}
-
-model Book {
-  id    Int         @id @default(autoincrement())
-  name  String
-  autor AutorBook[]
-}
-
-model AutorBook {
-  autor    Autor @relation(fields: [autor_id], references: [id])
-  autor_id Int   @unique
-  book     Book  @relation(fields: [book_id], references: [id])
-  book_id  Int
-
-  @@id([autor_id, book_id])
+model Todo {
+  id        Int      @id @default(autoincrement())
+  title     String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
