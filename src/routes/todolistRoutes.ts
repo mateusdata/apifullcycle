@@ -6,7 +6,7 @@ import UserController from '../controllers/UserController';
 
 export default async function todolistRoutes(route: FastifyInstance) {
   // Middleware para verificar o token de autenticação
- // route.addHook('preHandler', authenticateToken);
+  //route.addHook('preHandler', authenticateToken);
 
   // Rotas do controlador Todolist
   route.post('/todolist', TodolistController.create);

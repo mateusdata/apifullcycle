@@ -9,7 +9,7 @@ COPY package*.json ./
 # Copiar o .env para dentro do projeto, porque se rota o 
 # npx prisma generate sem ter o .env a conceção com o banco de dados não vai ser comcluida
 
-COPY .env .env
+##COPY .env .env
 
 # Instale todas as dependências
 
