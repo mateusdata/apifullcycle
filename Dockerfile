@@ -1,29 +1,54 @@
-FROM node:20
+# syntax = docker/dockerfile:1
 
+# Adjust NODE_VERSION as desired
+ARG NODE_VERSION=21.7.1
+FROM node:${NODE_VERSION}-slim as base
+
+LABEL fly_launch_runtime="Node.js/Prisma"
+
+# Node.js/Prisma app lives here
 WORKDIR /app
-##RUN apt-get update -y && apt-get install -y openssl
 
-# Copie os arquivos package.json e package-lock.json
-COPY package*.json ./
+# Set production environment
+ENV NODE_ENV="production"
 
-# Instale todas as dependências
 
-RUN npm install
+# Throw-away build stage to reduce size of final image
+FROM base as build
 
-# Copie o diretório prisma
-COPY prisma ./prisma
+# Install packages needed to build node modules
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential node-gyp openssl pkg-config python-is-python3
 
-# Gere o cliente Prisma
+# Install node modules
+COPY --link package-lock.json package.json ./
+RUN npm ci --include=dev
+
+# Generate Prisma Client
+COPY --link prisma .
 RUN npx prisma generate
 
-# Copie todos os outros arquivos do projeto
-COPY . .
+# Copy application code
+COPY --link . .
 
-# Execute o comando de build
+# Build application
 RUN npm run build
 
-# Exponha a porta que seu aplicativo usará
-EXPOSE 3000
+# Remove development dependencies
+RUN npm prune --omit=dev
 
-# Inicie o aplicativo
-CMD [ "npm", "start" ]
+
+# Final stage for app image
+FROM base
+
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y openssl && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Copy built application
+COPY --from=build /app /app
+
+# Start the server by default, this can be overwritten at runtime
+EXPOSE 3000
+CMD [ "npm", "run", "start" ]

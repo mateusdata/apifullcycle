@@ -1,11 +1,10 @@
 import fastify from 'fastify'
 import connectDatabase from './config/conection';
 import todolistRoutes from './routes/todolistRoutes';
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
+const ADDRESS = '0.0.0.0';
 
-const app = fastify({
-    bodyLimit: 900
-})
+const app = fastify()
 connectDatabase()
 app.get('/', async (request, reply) => {
     
@@ -14,6 +13,6 @@ app.get('/', async (request, reply) => {
 
 app.register(todolistRoutes)
 
-app.listen({ port:Number(PORT) }).then(() => {
+app.listen({ host:ADDRESS,  port:Number(PORT) }).then(() => {
     console.log(`HTTP server running on port ${PORT}`);
 });
