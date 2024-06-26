@@ -16,12 +16,7 @@ const app = fastify({
 
 connectDatabase()
 
-app.register(fastifyRateLimit), {
-    max: 100,
-    timeWindow: '1 minute',
-}
-
-app.register(fastifyRateLimit, { global: true, max: 20, timeWindow: 1000 *60 })
+app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 *60, })
 
 app.register(fastifyExpress);
 
