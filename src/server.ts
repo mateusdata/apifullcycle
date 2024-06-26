@@ -1,6 +1,7 @@
 import fastify from 'fastify'
 import connectDatabase from './config/conection';
 import todolistRoutes from './routes/todolistRoutes';
+import authRoute from './routes/authRoutes';
 const PORT = process.env.PORT || 3000;
 const ADDRESS = '0.0.0.0';
 
@@ -10,7 +11,8 @@ app.get('/', async (request, reply) => {
     return reply.send({name:"apifullcycle"});
 });
 
-app.register(todolistRoutes)
+app.register(todolistRoutes);
+app.register(authRoute)
 
 app.listen({ host:ADDRESS,  port:Number(PORT) }).then(() => {
     console.log(`HTTP server running on port ${PORT}`);
