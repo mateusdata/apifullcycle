@@ -7,7 +7,6 @@ const ADDRESS = '0.0.0.0';
 const app = fastify()
 connectDatabase()
 app.get('/', async (request, reply) => {
-    
     return reply.send({name:"apifullcycle"});
 });
 
