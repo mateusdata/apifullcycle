@@ -11,6 +11,8 @@ class TodolistController {
             description: z.string()
         })
         const validade = schema.parse(request?.body)
+        console.dir(validade.title)
+       
         try {
             const todoList = await prisma.todoList.create({
                 data: {

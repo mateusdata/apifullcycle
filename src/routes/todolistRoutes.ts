@@ -9,6 +9,7 @@ export default async function todolistRoutes(route: FastifyInstance) {
   //route.addHook('preHandler', authenticateToken);
 
   // Rotas do controlador Todolist
+  route.post('/todolists', { preHandler: authenticateToken }, TodolistController.create);
   route.post('/todolist', TodolistController.create);
   route.get('/todolist', TodolistController.index);
   route.get('/todolist/:id', TodolistController.show);

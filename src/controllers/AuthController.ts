@@ -30,7 +30,7 @@ class AuthController {
         const passwordHash = await bcrypt.compare(password, String(user?.password))
         if (passwordHash) {
             // Criação do token JWT
-            const token = jwt.sign({ id: user?.user_id }, "123", { expiresIn: "1m" });
+            const token = jwt.sign({ id: user?.user_id }, "123", { expiresIn: "5d" });
 
             // Exemplo de resposta com o token
             reply.send({ token });
