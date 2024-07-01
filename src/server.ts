@@ -5,6 +5,8 @@ import authRoute from './routes/authRoutes';
 import fastifyExpress from '@fastify/express';
 import fastifyRateLimit from '@fastify/rate-limit';
 import { envConfig } from './config/envConfig';
+import cors from '@fastify/cors'
+
 const PORT = envConfig.PORT || 3000;
 const HOST = envConfig.HOST;
 
@@ -23,18 +25,16 @@ const app = fastify({
 
 });
 
+app.register(cors, {})
 connectDatabase()
 
 app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
-
 app.register(fastifyExpress);
-
-
 app.get('/', async (request, reply) => {
-    return reply.send({ name: "apifullcycle" });
+    return reply.send({ name: "apifullcycle v 1.0.0" });
 });
-
 app.register(todolistRoutes);
 app.register(authRoute)
 console.log(typeof envConfig.PORT)
+
 app.listen({ host: HOST, port: PORT });
