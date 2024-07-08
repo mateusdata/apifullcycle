@@ -6,18 +6,17 @@ import { z } from "zod";
 class TodolistController {
 
     async create(request: FastifyRequest, reply: FastifyReply) {
-        const schema = z.object({
+        const todoListSchema = z.object({
             title: z.string(),
             description: z.string()
         })
-        const validade = schema.parse(request?.body)
-        console.dir(validade.title)
-       
+        const { title, description } = todoListSchema.parse(request?.body)
+
         try {
             const todoList = await prisma.todoList.create({
                 data: {
-                    title: validade.title,
-                    description: validade.description
+                    title: title,
+                    description: description
                 }
 
             })
@@ -35,6 +34,8 @@ class TodolistController {
             const todoList = await prisma.todoList.findMany()
             return reply.send(todoList);
         } catch (error) {
+            console.log(error);
+            
             return reply.status(500).send({ message: "Ocorreu um erro no servidor" });
         }
 
@@ -56,21 +57,21 @@ class TodolistController {
     }
     async update(request: FastifyRequest, reply: FastifyReply) {
 
-        const schema = z.object({
+        const todoListSchema = z.object({
             title: z.string().optional(),
             description: z.string().optional()
         })
         const { id }: any = request.params
 
-        const validade = schema.parse(request?.body)
+        const {title, description} = todoListSchema.parse(request?.body)
 
         try {
 
             const todoList = await prisma.todoList.update({
                 where: { id: Number(id) },
                 data: {
-                    title: validade.title,
-                    description: validade.description
+                    title: title,
+                    description: description
                 }
 
             })
