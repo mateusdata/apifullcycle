@@ -7,7 +7,7 @@ import auth from '../middlewares/auth';
 
 export default async function todolistRoutes(route: FastifyInstance) {
   // Middleware para verificar o token de autenticação
-  //route.addHook('preHandler', authenticateToken);
+  route.addHook('preHandler', authenticateToken);
 
   // Rotas do controlador Todolist
   //route.get('/todolist', { preHandler: auth }, TodolistController.index);

@@ -19,7 +19,7 @@ export default async function authenticateToken(request: FastifyRequest, reply: 
       }
 
       //next
-      console.dir(tokenHeader)
+      console.dir(headers)
      
     });
 
