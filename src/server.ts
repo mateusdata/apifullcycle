@@ -1,3 +1,4 @@
+import { htmlContent } from './templates/htmlContent';
 import fastify from 'fastify'
 import connectDatabase, { prisma } from './config/conection';
 import todolistRoutes from './routes/todolistRoutes';
@@ -34,9 +35,11 @@ app.register(websocketRoute);
 
 app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
 app.register(fastifyExpress);
-app.get('/s', async (request, reply) => {
-    return reply.send({ name: "apifullcycle v 1.0.0" });
+
+app.get('/', async (request, reply) => {
+    return reply.type('text/html').send(htmlContent);
 });
+
 app.register(todolistRoutes);
 app.register(authRoute)
 console.log(typeof envConfig.PORT)
