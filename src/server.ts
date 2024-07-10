@@ -33,7 +33,7 @@ connectDatabase()
 app.register(fastifyWebsocket);
 app.register(websocketRoute);
 
-app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
+//app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
 app.register(fastifyExpress);
 
 app.get('/', async (request, reply) => {
