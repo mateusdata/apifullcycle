@@ -9,6 +9,8 @@ import { envConfig } from './config/envConfig';
 import cors from '@fastify/cors'
 import websocketRoute from './routes/websocketRoute';
 import fastifyWebsocket from '@fastify/websocket';
+import axios from 'axios';
+import { log } from 'console';
 
 const PORT = envConfig.PORT || 3000;
 const HOST = envConfig.HOST;
@@ -33,6 +35,10 @@ connectDatabase()
 app.register(fastifyWebsocket);
 app.register(websocketRoute);
 
+const metricsPlugin = require('fastify-metrics');
+app.register(metricsPlugin, { endpoint: '/metrics' });
+
+
 //app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
 app.register(fastifyExpress);
 
@@ -40,8 +46,35 @@ app.get('/', async (request, reply) => {
     return reply.type('text/html').send(htmlContent);
 });
 
+
+app.get('/events', (request, reply) => {
+    reply.raw.setHeader('Content-Type', 'text/event-stream');
+    reply.raw.setHeader('Cache-Control', 'no-cache');
+    reply.raw.setHeader('Access-Control-Allow-Origin', '*');
+    reply.raw.setHeader('Connection', 'keep-alive');
+    reply.raw.flushHeaders();
+
+    const intervalId = setInterval(async () => {
+
+        const todolist = await prisma.todoList.count()
+        log(todolist)
+        const data = {
+            nome: 'João Silva',
+            email: 'joao.silva@example.com',
+            organizacao: 'Empresa ABC',
+            total: todolist
+        };
+        reply.raw.write(`data: ${JSON.stringify(data)}\n\n`);
+    }, 200);
+
+    reply.raw.on('close', () => {
+        clearInterval(intervalId);
+        reply.raw.end();
+    });
+});
+
+
+
 app.register(todolistRoutes);
 app.register(authRoute)
-console.log(typeof envConfig.PORT)
-
 app.listen({ host: HOST, port: PORT });
