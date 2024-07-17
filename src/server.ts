@@ -5,15 +5,15 @@ import todolistRoutes from './routes/todolistRoutes';
 import authRoute from './routes/authRoutes';
 import fastifyExpress from '@fastify/express';
 import fastifyRateLimit from '@fastify/rate-limit';
-import { envConfig } from './config/envConfig';
+//import { envConfig } from './config/envConfig';
 import cors from '@fastify/cors'
 import websocketRoute from './routes/websocketRoute';
 import fastifyWebsocket from '@fastify/websocket';
 import axios from 'axios';
 import { log } from 'console';
 
-const PORT = envConfig.PORT || 3000;
-const HOST = envConfig.HOST;
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST;
 
 const app = fastify({
     bodyLimit: 1024 * 1024 * 5,
@@ -77,4 +77,4 @@ app.get('/events', (request, reply) => {
 
 app.register(todolistRoutes);
 app.register(authRoute)
-app.listen({ host: HOST, port: PORT });
+app.listen({ host: HOST, port: Number(PORT) });
