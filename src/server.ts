@@ -77,4 +77,4 @@ app.get('/events', (request, reply) => {
 
 app.register(todolistRoutes);
 app.register(authRoute)
-app.listen({ host: "0.0.0.0", port: Number(PORT) });
+app.listen({ host: HOST, port: Number(PORT) });
