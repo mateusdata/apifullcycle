@@ -1,51 +1,72 @@
 import { htmlContent } from './templates/htmlContent';
-import fastify from 'fastify'
+import fastify from 'fastify';
 import connectDatabase, { prisma } from './config/conection';
 import todolistRoutes from './routes/todolistRoutes';
 import authRoute from './routes/authRoutes';
 import fastifyExpress from '@fastify/express';
 import fastifyRateLimit from '@fastify/rate-limit';
-//import { envConfig } from './config/envConfig';
-import cors from '@fastify/cors'
+import cors from '@fastify/cors';
 import websocketRoute from './routes/websocketRoute';
 import fastifyWebsocket from '@fastify/websocket';
 import axios from 'axios';
-import { log } from 'console';
+import fs from 'fs';
+import pino from 'pino';
 
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST;
+const HOST = process.env.HOST || '127.0.0.1';
+
+const logDir = './logs';
+if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true });
+}
+
+const logger = pino({
+    level: 'info',
+    base: null,
+    timestamp: pino.stdTimeFunctions.isoTime,
+    transport: {
+        targets: [
+            {
+                target: 'pino-pretty',
+                options: {
+                    translateTime: 'yyyy-mm-dd HH:MM:ss',
+                    ignore: 'pid,hostname,reqId,res,req'
+                }
+            },
+            {
+                target: 'pino/file',
+                options: {
+                    destination: `${logDir}/app.log`
+                }
+            }
+        ]
+    }
+});
 
 const app = fastify({
     bodyLimit: 1024 * 1024 * 5,
     trustProxy: false,
-    logger: {
-        transport: {
-            target: 'pino-pretty',
-            options: {
-                translateTime: false,
-                ignore: 'pid,hostname,reqId,res,req'
-            }
-        }
-    }
-
+    logger: logger
 });
 
-app.register(cors, {})
-connectDatabase()
+app.register(cors, {});
 app.register(fastifyWebsocket);
 app.register(websocketRoute);
 
 const metricsPlugin = require('fastify-metrics');
 app.register(metricsPlugin, { endpoint: '/metrics' });
 
+app.register(fastifyRateLimit, {
+    global: true,
+    max: 100,
+    timeWindow: 1000 * 60,
+});
 
-//app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
 app.register(fastifyExpress);
 
 app.get('/', async (request, reply) => {
     return reply.type('text/html').send(htmlContent);
 });
-
 
 app.get('/events', (request, reply) => {
     reply.raw.setHeader('Content-Type', 'text/event-stream');
@@ -55,14 +76,12 @@ app.get('/events', (request, reply) => {
     reply.raw.flushHeaders();
 
     const intervalId = setInterval(async () => {
-
-        const todolist = await prisma.todoList.count()
-        log(todolist)
+        const todolistCount = await prisma.todoList.count();
         const data = {
             nome: 'João Silva',
             email: 'joao.silva@example.com',
             organizacao: 'Empresa ABC',
-            total: todolist
+            total: todolistCount
         };
         reply.raw.write(`data: ${JSON.stringify(data)}\n\n`);
     }, 200);
@@ -73,8 +92,13 @@ app.get('/events', (request, reply) => {
     });
 });
 
-
-
 app.register(todolistRoutes);
-app.register(authRoute)
-app.listen({ host: HOST, port: Number(PORT) });
+app.register(authRoute);
+
+app.listen({ host: HOST, port: Number(PORT) }, (err) => {
+    if (err) {
+        app.log.error(err);
+        process.exit(1);
+    }
+    app.log.info(`Server listening on http://${HOST}:${PORT}`);
+});
