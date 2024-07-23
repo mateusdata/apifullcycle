@@ -13,7 +13,7 @@ import axios from 'axios';
 import { log } from 'console';
 
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST;
+const HOST = process.env.HOST || "0.0.0.0";
 
 const app = fastify({
     bodyLimit: 1024 * 1024 * 5,
@@ -73,8 +73,9 @@ app.get('/events', (request, reply) => {
     });
 });
 
-
-
+app.get("/esdras", (request, reply) => {
+    reply.send("rodando dentro do container")
+})
 app.register(todolistRoutes);
 app.register(authRoute)
 app.listen({ host: HOST, port: Number(PORT) });

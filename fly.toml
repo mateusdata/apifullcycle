@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for apifullcycle on 2024-06-25T22:00:51-03:00
+# fly.toml app configuration file generated for apifullcycle on 2024-07-21T17:20:15-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'apifullcycle'
-primary_region = 'gig'
+primary_region = 'gru'
 
 [build]
 
@@ -17,6 +17,6 @@ primary_region = 'gig'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
+  memory = '2gb'
   cpu_kind = 'shared'
-  cpus = 1
+  cpus = 2
