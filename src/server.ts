@@ -43,8 +43,7 @@ app.register(metricsPlugin, { endpoint: '/metrics' });
 app.register(fastifyExpress);
 
 app.get('/', async (request, reply) => {
-   // return reply.type('text/html').send(htmlContent);
-   return 10;
+    return reply.type('text/html').send(htmlContent);
 });
 
 
