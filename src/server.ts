@@ -1,3 +1,4 @@
+import swagger from '@fastify/swagger';
 import { htmlContent } from './templates/htmlContent';
 import fastify from 'fastify'
 import connectDatabase, { prisma } from './config/conection';
@@ -8,9 +9,7 @@ import fastifyRateLimit from '@fastify/rate-limit';
 import cors from '@fastify/cors'
 import websocketRoute from './routes/websocketRoute';
 import fastifyWebsocket from '@fastify/websocket';
-import swagger from '@fastify/swagger';
-import swaggerUi from '@fastify/swagger-ui';
-
+import swaggerJson from "../swagger.json"
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -31,17 +30,23 @@ const app = fastify({
 });
 connectDatabase()
 
+app.register(require('@fastify/swagger'))
+app.register(require('@fastify/swagger-ui'), {
+        
+})
 app.register(cors, {})
 app.register(fastifyWebsocket);
 app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
-app.register(fastifyExpress);
+
+
 const metricsPlugin = require('fastify-metrics');
 app.register(metricsPlugin, { endpoint: '/metrics' });
-app.register(swagger)
 
 app.register(todolistRoutes);
 app.register(authRoute)
 app.register(websocketRoute);
+
+
 
 app.get('/', async (request, reply) => {
     return reply.type('text/html').send(htmlContent);
