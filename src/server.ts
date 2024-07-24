@@ -5,12 +5,12 @@ import todolistRoutes from './routes/todolistRoutes';
 import authRoute from './routes/authRoutes';
 import fastifyExpress from '@fastify/express';
 import fastifyRateLimit from '@fastify/rate-limit';
-//import { envConfig } from './config/envConfig';
 import cors from '@fastify/cors'
 import websocketRoute from './routes/websocketRoute';
 import fastifyWebsocket from '@fastify/websocket';
-import axios from 'axios';
-import { log } from 'console';
+import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
+
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -29,23 +29,23 @@ const app = fastify({
     }
 
 });
+connectDatabase()
 
 app.register(cors, {})
-connectDatabase()
 app.register(fastifyWebsocket);
-app.register(websocketRoute);
-
+app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
+app.register(fastifyExpress);
 const metricsPlugin = require('fastify-metrics');
 app.register(metricsPlugin, { endpoint: '/metrics' });
+app.register(swagger)
 
-
-//app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
-app.register(fastifyExpress);
+app.register(todolistRoutes);
+app.register(authRoute)
+app.register(websocketRoute);
 
 app.get('/', async (request, reply) => {
     return reply.type('text/html').send(htmlContent);
 });
-
 
 app.get('/events', (request, reply) => {
     reply.raw.setHeader('Content-Type', 'text/event-stream');
@@ -57,7 +57,6 @@ app.get('/events', (request, reply) => {
     const intervalId = setInterval(async () => {
 
         const todolist = await prisma.todoList.count()
-        log(todolist)
         const data = {
             nome: 'João Silva',
             email: 'joao.silva@example.com',
@@ -73,9 +72,4 @@ app.get('/events', (request, reply) => {
     });
 });
 
-app.get("/esdras", (request, reply) => {
-    reply.send("rodando dentro do container")
-})
-app.register(todolistRoutes);
-app.register(authRoute)
 app.listen({ host: HOST, port: Number(PORT) });

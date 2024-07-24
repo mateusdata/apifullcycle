@@ -17,6 +17,8 @@
     "@fastify/express": "^3.0.0",
     "@fastify/jwt": "^8.0.1",
     "@fastify/rate-limit": "^9.1.0",
+    "@fastify/swagger": "^8.15.0",
+    "@fastify/swagger-ui": "^4.0.1",
     "@fastify/websocket": "^10.0.1",
     "@prisma/client": "^5.16.2",
     "@types/bcrypt": "^5.0.2",
