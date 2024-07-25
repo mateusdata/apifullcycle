@@ -1,0 +1,23 @@
+app = 'grafanacycle'
+primary_region = 'gig'
+
+[build]
+
+[http_service]
+auto_start_machines = true
+auto_stop_machines = 'stop'
+force_https = true
+internal_port = 3000
+min_machines_running = 0
+processes = ['app']
+
+[[vm]]
+cpu_kind = 'shared'
+cpus = 1
+memory = '1gb'
+
+[[mounts]]
+destination = '/var/lib/grafana'
+source = 'grafana'
+[env]
+GF_SECURITY_ADMIN_PASSWORD = "admin"

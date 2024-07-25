@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  grafanacycle:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: grafanacycle
+    ports:
+      - "3000:3000" # Grafana usa a porta 4000 por padrão
+   
