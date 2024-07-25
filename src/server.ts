@@ -1,4 +1,3 @@
-import swagger from '@fastify/swagger';
 import { htmlContent } from './templates/htmlContent';
 import fastify from 'fastify'
 import connectDatabase, { prisma } from './config/conection';
@@ -9,7 +8,6 @@ import fastifyRateLimit from '@fastify/rate-limit';
 import cors from '@fastify/cors'
 import websocketRoute from './routes/websocketRoute';
 import fastifyWebsocket from '@fastify/websocket';
-import swaggerJson from "../swagger.json"
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -30,13 +28,9 @@ const app = fastify({
 });
 connectDatabase()
 
-app.register(require('@fastify/swagger'))
-app.register(require('@fastify/swagger-ui'), {
-        
-})
 app.register(cors, {})
 app.register(fastifyWebsocket);
-app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
+//app.register(fastifyRateLimit, { global: true, max: 100, timeWindow: 1000 * 60, })
 
 
 const metricsPlugin = require('fastify-metrics');
