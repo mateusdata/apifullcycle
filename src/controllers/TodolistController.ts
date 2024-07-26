@@ -6,6 +6,7 @@ import { z } from "zod";
 class TodolistController {
 
     async create(request: FastifyRequest, reply: FastifyReply) {
+        return reply.send("1")
         const todoListSchema = z.object({
             title: z.string(),
             description: z.string()

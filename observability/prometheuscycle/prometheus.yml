@@ -31,4 +31,9 @@ scrape_configs:
       - targets: ["api.mateusdata.com.br"]
 
   # Exemplo de scrape configuração para outro serviço
- 
+  # Exemplo de scrape configuração para outro serviço
+  - job_name: "Testando_volumes_fly"
+    scrape_interval: 3s
+    scheme: https
+    static_configs:
+      - targets: ["api.mateusdata.com.br"]

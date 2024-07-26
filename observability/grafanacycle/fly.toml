@@ -1,23 +1,29 @@
+# fly.toml app configuration file generated for grafanacycle on 2024-07-26T10:04:19-03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
 app = 'grafanacycle'
 primary_region = 'gig'
 
 [build]
 
-[http_service]
-auto_start_machines = true
-auto_stop_machines = 'stop'
-force_https = true
-internal_port = 3000
-min_machines_running = 0
-processes = ['app']
-
-[[vm]]
-cpu_kind = 'shared'
-cpus = 1
-memory = '1gb'
+[env]
+  GF_SECURITY_ADMIN_PASSWORD = 'admin'
 
 [[mounts]]
-destination = '/var/lib/grafana'
-source = 'grafana'
-[env]
-GF_SECURITY_ADMIN_PASSWORD = "admin"
+  source = 'grafana'
+  destination = '/var/lib/grafana'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

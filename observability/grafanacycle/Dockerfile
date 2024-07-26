@@ -8,3 +8,4 @@ VOLUME ["/var/lib/grafana"]
 
 # Defina o ponto de entrada padrão
 CMD ["grafana-server", "--homepath=/usr/share/grafana"]
+    

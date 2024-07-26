@@ -13,8 +13,8 @@
 # URL para localhost/todolist
 
 
-#URL="http://localhost:3000/todolist"
-URL="https://api.mateusdata.com.br/todolist"
+URL="http://localhost:3000/todolist"
+#URL="https://api.mateusdata.com.br/todolist"
 
 
 #siege -c 90 -r 3 -b  $URL
@@ -22,5 +22,5 @@ URL="https://api.mateusdata.com.br/todolist"
 
 #siege -R ~/.siegerc -c 255  -r 99999 -b -t 60S $URL
 
-siege -R ~/.siegerc -c 255 -r 1000000000 -d 0  $URL
+siege -R ~/.siegerc -c 1 -r 10000 -d 0  $URL
 

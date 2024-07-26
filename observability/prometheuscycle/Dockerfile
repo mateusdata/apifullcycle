@@ -7,5 +7,6 @@ COPY prometheus.yml /etc/prometheus/prometheus.yml
 # Exponha a porta 9090 que o Prometheus usa por padrão
 EXPOSE 9090
 
+#VOLUME [ "/prometheus" ]
 # Comando para iniciar o Prometheus
 CMD ["--config.file=/etc/prometheus/prometheus.yml"]
