@@ -50,4 +50,36 @@ app.get('/', async (request, reply) => {
 
 
 
+import { OAuth2Client } from 'google-auth-library'
+const CLIENT_ID = process.env.CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
+
+app.post('/google', async (request, reply) => {
+    const { idToken } = request.body as any;
+  
+    if (!idToken) {
+      return reply.status(400).send({ error: 'idToken is required' });
+    }
+  
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: idToken,
+        audience: CLIENT_ID,
+      });
+  
+      const payload:any = ticket.getPayload();
+      const userInfo = {
+        userId: payload.sub,
+        email: payload.email,
+        name: payload.name,
+        picture: payload.picture,
+      };
+  
+      return userInfo;
+    } catch (error) {
+      return reply.status(401).send({ error: 'Invalid token' });
+    }
+  });
+
+
 app.listen({ host: HOST, port: Number(PORT) });
