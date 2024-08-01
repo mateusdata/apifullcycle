@@ -81,7 +81,7 @@ app.post('/google', async (request, reply) => {
   }
 });
 
-const nodemailer = require('nodemailer');
+/*const nodemailer = require('nodemailer');
 
 // Carrega as credenciais e configurações do .env
 const smtpHost = process.env.SMTP_HOST;
