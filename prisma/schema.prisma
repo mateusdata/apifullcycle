@@ -30,18 +30,23 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  posts Post[]
+  posts     Post[]
+
   @@map("user")
 }
 
 model Post {
-  post_id Int @id @default(autoincrement())
-  name String
-  user_id Int 
-  autor User @relation(fields: [user_id], references: [user_id]) 
-  title String?
-  body String?
+  post_id    Int      @id @default(autoincrement())
+  name       String
+  user_id    Int
+  autor      User     @relation(fields: [user_id], references: [user_id])
+  title      String?
+  body       String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
 
+model HasMath {
+  id    Int    @id @default(autoincrement())
+  status Boolean
+}
