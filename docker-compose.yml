@@ -5,11 +5,9 @@ services:
     container_name: apifullcycle_dev
     build:
       context: .
-      dockerfile: Dockerfile_dev
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    volumes:
-      - /home/data/Área de Trabalho/Projetos/apifullcycle:/usr/src/app
-      - /usr/src/app/node_modules
+    
     environment:
       - NODE_ENV=development

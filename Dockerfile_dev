@@ -9,6 +9,7 @@ RUN npm install
 RUN npm install -g tsx
 
 COPY . .
+RUN npm instal -g prisma
 
 RUN npx prisma generate
 
