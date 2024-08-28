@@ -6,7 +6,6 @@ import { z } from "zod";
 class TodolistController {
 
     async create(request: FastifyRequest, reply: FastifyReply) {
-        return reply.send("1")
         const todoListSchema = z.object({
             title: z.string(),
             description: z.string()
@@ -30,18 +29,28 @@ class TodolistController {
 
 
     async index(request: FastifyRequest, reply: FastifyReply) {
-
+        const { page = 1, totalPage = 100 }: any = request.query;
+        const skip = (Number(page) - 1) * Number(totalPage); // Corrige o cálculo do skip
+        const take = Number(totalPage);
+    
+        console.dir("Pagina => " + page);
+        console.dir("TotalPage => " + totalPage);
+        console.dir("Skip => " + skip);
+        console.dir("Take => " + take);
+    
         try {
-            const todoList = await prisma.todoList.findMany()
+            const todoList = await prisma.todoList.findMany({
+                skip: skip,
+                take: take,
+                
+            });
             return reply.send(todoList);
         } catch (error) {
             console.log(error);
-            
             return reply.status(500).send({ message: "Ocorreu um erro no servidor" });
         }
-
     }
-
+    
     async show(request: FastifyRequest, reply: FastifyReply) {
 
         const { id }: any = request?.params;
@@ -64,7 +73,7 @@ class TodolistController {
         })
         const { id }: any = request.params
 
-        const {title, description} = todoListSchema.parse(request?.body)
+        const { title, description } = todoListSchema.parse(request?.body)
 
         try {
 

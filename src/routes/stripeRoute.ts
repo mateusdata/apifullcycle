@@ -35,14 +35,14 @@ export async function stripeRoute(app: FastifyInstance) {
 
 
 
-
-  app.register(fastifyRawBody, {
-    global: true,  // Torna o rawBody disponível globalmente
-    field: 'rawBody',  // Armazena o corpo bruto no campo `rawBody`
-    encoding: 'utf8',  // Codificação padrão
-  });
-  
-  
+  /*
+    app.register(fastifyRawBody, {
+      global: true,  // Torna o rawBody disponível globalmente
+      field: 'rawBody',  // Armazena o corpo bruto no campo `rawBody`
+      encoding: 'utf8',  // Codificação padrão
+    });
+    
+    */
   app.post('/webhook', async (request, reply) => {
     const sig = request.headers['stripe-signature'] as string;
     const rawBody = request.rawBody as Buffer;

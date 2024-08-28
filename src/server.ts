@@ -19,15 +19,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 const app = fastify({
   bodyLimit: 1024 * 1024 * 5,
   trustProxy: false,
-  logger: {
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        translateTime: false,
-        ignore: 'pid,hostname,reqId,res,req'
-      }
-    }
-  }
+  logger: true
 
 });
 connectDatabase()
